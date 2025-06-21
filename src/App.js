@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [input, setInput] = useState("");
-  const [tarefas, setTarefas] = useState(["Pagar contas", "Estudar React"]);
+  const [tarefas, setTarefas] = useState(() => {
+    const tarefasStorage = localStorage.getItem('novaTarefa')
+    return tarefasStorage ? JSON.parse(tarefasStorage) : [];})
+
+
+  useEffect(() => {
+    localStorage.setItem('novaTarefa', JSON.stringify(tarefas))
+  }, [tarefas]) 
 
   function handleRegister(e) {
     e.preventDefault();
-    setTarefas(input ? [...tarefas, input] : tarefas);
+    if (input.trim() === '') return;
+    setTarefas([...tarefas, input]);
     setInput("");
   }
 
@@ -23,7 +31,7 @@ function App() {
         ></input>
         <br />
         <br />
-        <button type="submit" onClick={handleRegister}>
+        <button type="submit">
           Registrar
         </button>
       </form>
